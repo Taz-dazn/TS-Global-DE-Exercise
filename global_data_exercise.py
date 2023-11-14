@@ -23,8 +23,7 @@ def process_file(batch_date: str) -> None:
     year, month, day = format_batch_date(batch_date)
 
     s3_client = boto3.client("s3")
-    # source_s3_bucket = "global-interview-bucket"
-    source_s3_bucket = "dazn-dev-as-run-logs-sync"
+    source_s3_bucket = "global-interview-bucket"
     source_s3_key = f"{year}/{month}/{day}/{batch_date}.csv"
 
     with tempfile.TemporaryDirectory() as tmp_directory:
@@ -37,7 +36,7 @@ def process_file(batch_date: str) -> None:
 
         tmp_output_file_path = transform_file(tmp_downloaded_file_name, tmp_directory)
 
-        s3_client.upload_file(tmp_output_file_path, source_s3_bucket, f"results/daily_agg_{year}{month}{day}_TS.csv")
+        s3_client.upload_file(tmp_output_file_path, source_s3_bucket, f"results/{year}/{month}/{day}/daily_agg_{year}{month}{day}_TS.csv")
         print('SUCCESS - Processed file uploaded to S3')
 
 
