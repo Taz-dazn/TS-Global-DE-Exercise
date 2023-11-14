@@ -23,18 +23,17 @@ def process_file(batch_date: str) -> None:
     year, month, day = format_batch_date(batch_date)
 
     s3_client = boto3.client("s3")
-    source_s3_bucket = "global-interview-bucket"
+    source_s3_bucket = 'global-interview-bucket'
     source_s3_key = f"{year}/{month}/{day}/{batch_date}.csv"
 
     with tempfile.TemporaryDirectory() as tmp_directory:
-        tmp_downloaded_file_name = f"{batch_date}.csv"
 
         try:
-            s3_client.download_file(source_s3_bucket, source_s3_key, f"{tmp_directory}/{tmp_downloaded_file_name}.csv")
+            s3_client.download_file(source_s3_bucket, source_s3_key, f"{tmp_directory}/{batch_date}.csv")
         except ClientError:
             raise FileNotFoundError(f"File Not in S3!!!, Bucket: {source_s3_bucket}, Key: {source_s3_key}")
 
-        tmp_output_file_path = transform_file(tmp_downloaded_file_name, tmp_directory)
+        tmp_output_file_path = transform_file(batch_date, tmp_directory)
 
         s3_client.upload_file(tmp_output_file_path, source_s3_bucket, f"results/{year}/{month}/{day}/daily_agg_{year}{month}{day}_TS.csv")
         print('SUCCESS - Processed file uploaded to S3')
