@@ -44,7 +44,7 @@ def set_env_variables() -> None:
     """
     Get the AWS Access Keys from config.yaml and set as environment variables
     """
-    # Open the file and load the file
+    # Open the file and load the file as a yaml
     with open('config.yaml') as f:
         credentials = yaml.load(f, Loader=SafeLoader)
 
